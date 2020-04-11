@@ -1,115 +1,128 @@
 import '@wokwi/elements';
-import { buildHex } from "./compile";
-import { AVRRunner } from "./execute";
-import { formatTime } from "./format-time";
-import { LEDElement } from "@wokwi/elements";
-import "./index.css";
+import { buildHex } from './compile';
+import { AVRRunner } from './execute';
+import { formatTime } from './format-time';
+import './index.css';
+import { CPUPerformance } from './cpu-performance';
+import { LEDElement } from '@wokwi/elements';
+import { EditorHistoryUtil } from './utils/editor-history.util';
 
+let editor: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 const BLINK_CODE = `
-// LEDs connected to pins 8..13
-
-byte leds[] = {13, 12, 11, 10, 9, 8};
+// Green LED connected to LED_BUILTIN,
+// Red LED connected to pin 12. Enjoy!
 void setup() {
-  for (byte i = 0; i < sizeof(leds); i++) {
-    pinMode(leds[i], OUTPUT);
-  }
+  Serial.begin(115200);
+  pinMode(LED_BUILTIN, OUTPUT);
 }
-
-int i = 0;
 void loop() {
-  digitalWrite(leds[i], HIGH);
-  delay(250);
-  digitalWrite(leds[i], LOW);
-  i = (i + 1) % sizeof(leds);
+  Serial.println("Blink");
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(500);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(500);
 }`.trim();
 
-let editor;
-declare const window: any;
-declare const monaco: any;
-window.editorLoaded = () => {
-  window.require.config({
-    paths: {
-      vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.18.1/min/vs"
-    }
+// Load Editor
+declare const window: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+declare const monaco: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+window.require.config({
+  paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }
+});
+window.require(['vs/editor/editor.main'], () => {
+  editor = monaco.editor.create(document.querySelector('.code-editor'), {
+    value: EditorHistoryUtil.getValue() || BLINK_CODE,
+    language: 'cpp',
+    minimap: { enabled: false }
   });
-  window.require(["vs/editor/editor.main"], () => {
-    editor = monaco.editor.create(document.querySelector(".code-editor"), {
-      value: BLINK_CODE,
-      language: "cpp",
-      minimap: { enabled: false }
-    });
-  });
-};
+});
 
 // Set up LEDs
-const LEDs = document.querySelectorAll<LEDElement & HTMLElement>("wokwi-led");
+const led13 = document.querySelector<LEDElement>('wokwi-led[color=green]');
+const led12 = document.querySelector<LEDElement>('wokwi-led[color=red]');
 
 // Set up toolbar
 let runner: AVRRunner;
 
-const runButton = document.querySelector("#run-button");
-runButton.addEventListener("click", compileAndRun);
-const stopButton = document.querySelector("#stop-button");
-stopButton.addEventListener("click", stopCode);
-const statusLabel = document.querySelector("#status-label");
-const compilerOutputText = document.querySelector("#compiler-output-text");
-
-function updateLEDs(value: number, startPin: number) {
-  for (const led of LEDs) {
-    const pin = parseInt(led.getAttribute("pin"), 10);
-    if (pin >= startPin && pin <= startPin + 8) {
-      led.value = value & (1 << (pin - startPin)) ? true : false;
-    }
-  }
-}
+/* eslint-disable @typescript-eslint/no-use-before-define */
+const runButton = document.querySelector('#run-button');
+runButton.addEventListener('click', compileAndRun);
+const stopButton = document.querySelector('#stop-button');
+stopButton.addEventListener('click', stopCode);
+const revertButton = document.querySelector('#revert-button');
+revertButton.addEventListener('click', setBlinkSnippet);
+const statusLabel = document.querySelector('#status-label');
+const compilerOutputText = document.querySelector('#compiler-output-text');
+const serialOutputText = document.querySelector('#serial-output-text');
 
 function executeProgram(hex: string) {
   runner = new AVRRunner(hex);
   const MHZ = 16000000;
 
   // Hook to PORTB register
-  runner.portD.addListener(value => {
-    updateLEDs(value, 0);
+  runner.portB.addListener((value) => {
+    const D12bit = 1 << 4;
+    const D13bit = 1 << 5;
+    led12.value = value & D12bit ? true : false;
+    led13.value = value & D13bit ? true : false;
   });
-  runner.portB.addListener(value => {
-    updateLEDs(value, 8);
-  });
-  runner.execute(cpu => {
+  runner.usart.onByteTransmit = (value) => {
+    serialOutputText.textContent += String.fromCharCode(value);
+  };
+  const cpuPerf = new CPUPerformance(runner.cpu, MHZ);
+  runner.execute((cpu) => {
     const time = formatTime(cpu.cycles / MHZ);
-    statusLabel.textContent = "Simulation time: " + time;
+    const speed = (cpuPerf.update() * 100).toFixed(0);
+    statusLabel.textContent = `Simulation time: ${time} (${speed}%)`;
   });
 }
 
 async function compileAndRun() {
-  for (const led of LEDs) {
-    led.value = false;
-  }
+  led12.value = false;
+  led13.value = false;
 
-  runButton.setAttribute("disabled", "1");
+  storeUserSnippet();
+
+  runButton.setAttribute('disabled', '1');
+  revertButton.setAttribute('disabled', '1');
+
+  serialOutputText.textContent = '';
   try {
-    statusLabel.textContent = "Compiling...";
+    statusLabel.textContent = 'Compiling...';
     const result = await buildHex(editor.getModel().getValue());
     compilerOutputText.textContent = result.stderr || result.stdout;
     if (result.hex) {
-      compilerOutputText.textContent += "\nProgram running...";
-      stopButton.removeAttribute("disabled");
+      compilerOutputText.textContent += '\nProgram running...';
+      stopButton.removeAttribute('disabled');
       executeProgram(result.hex);
     } else {
-      runButton.removeAttribute("disabled");
+      runButton.removeAttribute('disabled');
     }
   } catch (err) {
-    runButton.removeAttribute("disabled");
-    alert("Failed: " + err);
+    runButton.removeAttribute('disabled');
+    revertButton.removeAttribute('disabled');
+    alert('Failed: ' + err);
   } finally {
-    statusLabel.textContent = "";
+    statusLabel.textContent = '';
   }
 }
 
+function storeUserSnippet() {
+  EditorHistoryUtil.clearSnippet();
+  EditorHistoryUtil.storeSnippet(editor.getValue());
+}
+
 function stopCode() {
-  stopButton.setAttribute("disabled", "1");
-  runButton.removeAttribute("disabled");
+  stopButton.setAttribute('disabled', '1');
+  runButton.removeAttribute('disabled');
+  revertButton.removeAttribute('disabled');
   if (runner) {
     runner.stop();
     runner = null;
   }
+}
+
+function setBlinkSnippet() {
+  editor.setValue(BLINK_CODE);
+  EditorHistoryUtil.storeSnippet(editor.getValue());
 }
