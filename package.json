@@ -34,5 +34,9 @@
     "gh-pages": "^1.2.0",
     "parcel-bundler": "^1.9.7",
     "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "@wokwi/elements": "^0.7.0",
+    "avr8js": "^0.6.1"
   }
 }

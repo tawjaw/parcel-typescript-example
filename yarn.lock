@@ -13,6 +13,13 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.0.tgz#50c1e2260ac0ed9439a181de3725a0168d59c48a"
 
+"@wokwi/elements@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@wokwi/elements/-/elements-0.7.0.tgz#b51a7d432ca8eabe2f396bae36a4a967db028ff9"
+  integrity sha512-Vijdoqikp5c2rwQUXK0gyNVk4BB5ful7dsvF0Q1iHIX+ufMkpD9frUmDVsOVXtuJApL10JL8kDNPdIIBzMsftg==
+  dependencies:
+    lit-element "^2.2.1"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -151,6 +158,11 @@ autoprefixer@^6.3.1:
     num2fraction "^1.2.2"
     postcss "^5.2.16"
     postcss-value-parser "^3.2.3"
+
+avr8js@^0.6.1:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/avr8js/-/avr8js-0.6.2.tgz#414364993b0c3211336b6039f02522c597396a30"
+  integrity sha512-KHRH7DvoWD9vpx2WV5QR9OWI9m8VcnjnvERmuMbFnXKIPtAoMeUuipShgN+s8FY0vN11mlmCciYhVv7Za/+Kxg==
 
 babel-code-frame@^6.26.0:
   version "6.26.0"
@@ -2429,6 +2441,18 @@ levn@~0.3.0:
   dependencies:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
+
+lit-element@^2.2.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/lit-element/-/lit-element-2.3.1.tgz#73343b978fa1e73d60526c6bb6ad60f53a16c343"
+  integrity sha512-tOcUAmeO3BzwiQ7FGWdsshNvC0HVHcTFYw/TLIImmKwXYoV0E7zCBASa8IJ7DiP4cen/Yoj454gS0qqTnIGsFA==
+  dependencies:
+    lit-html "^1.1.1"
+
+lit-html@^1.1.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-1.2.1.tgz#1fb933dc1e2ddc095f60b8086277d4fcd9d62cc8"
+  integrity sha512-GSJHHXMGLZDzTRq59IUfL9FCdAlGfqNp/dEa7k7aBaaWD+JKaCjsAk9KYm2V12ItonVaYx2dprN66Zdm1AuBTQ==
 
 lodash.clone@^4.5.0:
   version "4.5.0"
