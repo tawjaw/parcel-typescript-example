@@ -4675,7 +4675,11 @@ Object.defineProperty(exports, 'NeoPixelElement', {
 },{"./led-element":"../node_modules/@wokwi/elements/dist/esm/led-element.js","./pushbutton-element":"../node_modules/@wokwi/elements/dist/esm/pushbutton-element.js","./resistor-element":"../node_modules/@wokwi/elements/dist/esm/resistor-element.js","./7segment-element":"../node_modules/@wokwi/elements/dist/esm/7segment-element.js","./lcd1602-element":"../node_modules/@wokwi/elements/dist/esm/lcd1602-element.js","./lcd1602-font-a00":"../node_modules/@wokwi/elements/dist/esm/lcd1602-font-a00.js","./lcd1602-font-a02":"../node_modules/@wokwi/elements/dist/esm/lcd1602-font-a02.js","./neopixel-element":"../node_modules/@wokwi/elements/dist/esm/neopixel-element.js"}],"compile.ts":[function(require,module,exports) {
 "use strict";
 
-var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.buildHex = buildHex;
+var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) {
             try {
@@ -4699,43 +4703,87 @@ var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, gene
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+var __generator = undefined && undefined.__generator || function (thisArg, body) {
+    var _ = { label: 0, sent: function sent() {
+            if (t[0] & 1) throw t[1];return t[1];
+        }, trys: [], ops: [] },
+        f,
+        y,
+        t,
+        g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+        return this;
+    }), g;
+    function verb(n) {
+        return function (v) {
+            return step([n, v]);
+        };
+    }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) {
+            try {
+                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                if (y = 0, t) op = [op[0] & 2, t.value];
+                switch (op[0]) {
+                    case 0:case 1:
+                        t = op;break;
+                    case 4:
+                        _.label++;return { value: op[1], done: false };
+                    case 5:
+                        _.label++;y = op[1];op = [0];continue;
+                    case 7:
+                        op = _.ops.pop();_.trys.pop();continue;
+                    default:
+                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                            _ = 0;continue;
+                        }
+                        if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+                            _.label = op[1];break;
+                        }
+                        if (op[0] === 6 && _.label < t[1]) {
+                            _.label = t[1];t = op;break;
+                        }
+                        if (t && _.label < t[2]) {
+                            _.label = t[2];_.ops.push(op);break;
+                        }
+                        if (t[2]) _.ops.pop();
+                        _.trys.pop();continue;
+                }
+                op = body.call(thisArg, _);
+            } catch (e) {
+                op = [6, e];y = 0;
+            } finally {
+                f = t = 0;
+            }
+        }if (op[0] & 5) throw op[1];return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 var url = 'https://hexi.wokwi.com';
 function buildHex(source) {
-    return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    return __awaiter(this, void 0, void 0, function () {
         var resp;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-                switch (_context.prev = _context.next) {
-                    case 0:
-                        _context.next = 2;
-                        return fetch(url + '/build', {
-                            method: 'POST',
-                            mode: 'cors',
-                            cache: 'no-cache',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ sketch: source })
-                        });
-
-                    case 2:
-                        resp = _context.sent;
-                        _context.next = 5;
-                        return resp.json();
-
-                    case 5:
-                        return _context.abrupt("return", _context.sent);
-
-                    case 6:
-                    case "end":
-                        return _context.stop();
-                }
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    return [4 /*yield*/, fetch(url + '/build', {
+                        method: 'POST',
+                        mode: 'cors',
+                        cache: 'no-cache',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ sketch: source })
+                    })];
+                case 1:
+                    resp = _a.sent();
+                    return [4 /*yield*/, resp.json()];
+                case 2:
+                    return [2 /*return*/, _a.sent()];
             }
-        }, _callee, this);
-    }));
+        });
+    });
 }
-exports.buildHex = buildHex;
 },{}],"../node_modules/avr8js/dist/esm/cpu/cpu.js":[function(require,module,exports) {
 "use strict";
 
@@ -6466,159 +6514,129 @@ Object.keys(_twi).forEach(function (key) {
   });
 });
 },{"./cpu/cpu":"../node_modules/avr8js/dist/esm/cpu/cpu.js","./cpu/instruction":"../node_modules/avr8js/dist/esm/cpu/instruction.js","./cpu/interrupt":"../node_modules/avr8js/dist/esm/cpu/interrupt.js","./peripherals/timer":"../node_modules/avr8js/dist/esm/peripherals/timer.js","./peripherals/gpio":"../node_modules/avr8js/dist/esm/peripherals/gpio.js","./peripherals/usart":"../node_modules/avr8js/dist/esm/peripherals/usart.js","./peripherals/twi":"../node_modules/avr8js/dist/esm/peripherals/twi.js"}],"intelhex.ts":[function(require,module,exports) {
-"use strict";
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.loadHex = loadHex;
 /**
  * Minimal Intel HEX loader
  * Part of AVR8js
  *
  * Copyright (C) 2019, Uri Shaked
  */
-
-Object.defineProperty(exports, "__esModule", { value: true });
 function loadHex(source, target) {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-        for (var _iterator = source.split('\n')[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var line = _step.value;
-
-            if (line[0] === ':' && line.substr(7, 2) === '00') {
-                var bytes = parseInt(line.substr(1, 2), 16);
-                var addr = parseInt(line.substr(3, 4), 16);
-                for (var i = 0; i < bytes; i++) {
-                    target[addr + i] = parseInt(line.substr(9 + i * 2, 2), 16);
-                }
-            }
-        }
-    } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-    } finally {
-        try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
-            }
-        } finally {
-            if (_didIteratorError) {
-                throw _iteratorError;
+    for (var _i = 0, _a = source.split('\n'); _i < _a.length; _i++) {
+        var line = _a[_i];
+        if (line[0] === ':' && line.substr(7, 2) === '00') {
+            var bytes = parseInt(line.substr(1, 2), 16);
+            var addr = parseInt(line.substr(3, 4), 16);
+            for (var i = 0; i < bytes; i++) {
+                target[addr + i] = parseInt(line.substr(9 + i * 2, 2), 16);
             }
         }
     }
 }
-exports.loadHex = loadHex;
+},{}],"task-scheduler.ts":[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var MicroTaskScheduler = /** @class */function () {
+    function MicroTaskScheduler() {
+        var _this = this;
+        this.messageName = 'zero-timeout-message';
+        this.executionQueue = [];
+        this.stopped = true;
+        this.handleMessage = function (event) {
+            if (event.data === _this.messageName) {
+                event.stopPropagation();
+                var executeJob = _this.executionQueue.shift();
+                if (executeJob !== undefined) {
+                    executeJob();
+                }
+            }
+        };
+    }
+    MicroTaskScheduler.prototype.start = function () {
+        if (this.stopped) {
+            this.stopped = false;
+            window.addEventListener('message', this.handleMessage, true);
+        }
+    };
+    MicroTaskScheduler.prototype.stop = function () {
+        this.stopped = true;
+        window.removeEventListener('message', this.handleMessage, true);
+    };
+    MicroTaskScheduler.prototype.postTask = function (fn) {
+        if (!this.stopped) {
+            this.executionQueue.push(fn);
+            window.postMessage(this.messageName, '*');
+        }
+    };
+    return MicroTaskScheduler;
+}();
+exports.MicroTaskScheduler = MicroTaskScheduler;
 },{}],"execute.ts":[function(require,module,exports) {
-"use strict";
+'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.AVRRunner = undefined;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _avr8js = require('avr8js');
 
-var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) {
-            try {
-                step(generator.next(value));
-            } catch (e) {
-                reject(e);
-            }
-        }
-        function rejected(value) {
-            try {
-                step(generator["throw"](value));
-            } catch (e) {
-                reject(e);
-            }
-        }
-        function step(result) {
-            result.done ? resolve(result.value) : new P(function (resolve) {
-                resolve(result.value);
-            }).then(fulfilled, rejected);
-        }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var avr8js_1 = require("avr8js");
-var intelhex_1 = require("./intelhex");
+var _intelhex = require('./intelhex');
+
+var _taskScheduler = require('./task-scheduler');
+
 // ATmega328p params
 var FLASH = 0x8000;
-
-var AVRRunner = function () {
+var AVRRunner = /** @class */function () {
     function AVRRunner(hex) {
-        _classCallCheck(this, AVRRunner);
-
         this.program = new Uint16Array(FLASH);
-        this.stopped = false;
-        intelhex_1.loadHex(hex, new Uint8Array(this.program.buffer));
-        this.cpu = new avr8js_1.CPU(this.program);
-        this.timer = new avr8js_1.AVRTimer(this.cpu, avr8js_1.timer0Config);
-        this.portB = new avr8js_1.AVRIOPort(this.cpu, avr8js_1.portBConfig);
-        this.portC = new avr8js_1.AVRIOPort(this.cpu, avr8js_1.portCConfig);
-        this.portD = new avr8js_1.AVRIOPort(this.cpu, avr8js_1.portDConfig);
+        this.speed = 16e6; // 16 MHZ
+        this.workUnitCycles = 500000;
+        this.taskScheduler = new _taskScheduler.MicroTaskScheduler();
+        (0, _intelhex.loadHex)(hex, new Uint8Array(this.program.buffer));
+        this.cpu = new _avr8js.CPU(this.program);
+        this.timer = new _avr8js.AVRTimer(this.cpu, _avr8js.timer0Config);
+        this.portB = new _avr8js.AVRIOPort(this.cpu, _avr8js.portBConfig);
+        this.portC = new _avr8js.AVRIOPort(this.cpu, _avr8js.portCConfig);
+        this.portD = new _avr8js.AVRIOPort(this.cpu, _avr8js.portDConfig);
+        this.usart = new _avr8js.AVRUSART(this.cpu, _avr8js.usart0Config, this.speed);
+        this.taskScheduler.start();
     }
-
-    _createClass(AVRRunner, [{
-        key: "execute",
-        value: function execute(callback) {
-            return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-                return regeneratorRuntime.wrap(function _callee$(_context) {
-                    while (1) {
-                        switch (_context.prev = _context.next) {
-                            case 0:
-                                this.stopped = false;
-
-                            case 1:
-                                avr8js_1.avrInstruction(this.cpu);
-                                this.timer.tick();
-
-                                if (!(this.cpu.cycles % 50000 === 0)) {
-                                    _context.next = 9;
-                                    break;
-                                }
-
-                                callback(this.cpu);
-                                _context.next = 7;
-                                return new Promise(function (resolve) {
-                                    return setTimeout(resolve, 0);
-                                });
-
-                            case 7:
-                                if (!this.stopped) {
-                                    _context.next = 9;
-                                    break;
-                                }
-
-                                return _context.abrupt("break", 11);
-
-                            case 9:
-                                _context.next = 1;
-                                break;
-
-                            case 11:
-                            case "end":
-                                return _context.stop();
-                        }
-                    }
-                }, _callee, this);
-            }));
+    // CPU main loop
+    AVRRunner.prototype.execute = function (callback) {
+        var _this = this;
+        var cyclesToRun = this.cpu.cycles + this.workUnitCycles;
+        while (this.cpu.cycles < cyclesToRun) {
+            (0, _avr8js.avrInstruction)(this.cpu);
+            this.timer.tick();
+            this.usart.tick();
         }
-    }, {
-        key: "stop",
-        value: function stop() {
-            this.stopped = true;
-        }
-    }]);
-
+        callback(this.cpu);
+        this.taskScheduler.postTask(function () {
+            return _this.execute(callback);
+        });
+    };
+    AVRRunner.prototype.stop = function () {
+        this.taskScheduler.stop();
+    };
     return AVRRunner;
 }();
-
 exports.AVRRunner = AVRRunner;
-},{"avr8js":"../node_modules/avr8js/dist/esm/index.js","./intelhex":"intelhex.ts"}],"format-time.ts":[function(require,module,exports) {
+},{"avr8js":"../node_modules/avr8js/dist/esm/index.js","./intelhex":"intelhex.ts","./task-scheduler":"task-scheduler.ts"}],"format-time.ts":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.formatTime = formatTime;
 function zeroPad(value, length) {
     var sval = value.toString();
     while (sval.length < length) {
@@ -6632,7 +6650,6 @@ function formatTime(seconds) {
     var mins = Math.floor(seconds / 60);
     return zeroPad(mins, 2) + ":" + zeroPad(secs, 2) + "." + zeroPad(ms, 3);
 }
-exports.formatTime = formatTime;
 },{}],"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 function getBundleURLCached() {
@@ -6699,10 +6716,96 @@ module.exports = reloadCSS;
 var reloadCSS = require('_css_loader');
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"index.ts":[function(require,module,exports) {
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"cpu-performance.ts":[function(require,module,exports) {
 "use strict";
 
-var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var CPUPerformance = /** @class */function () {
+    function CPUPerformance(cpu, MHZ) {
+        this.cpu = cpu;
+        this.MHZ = MHZ;
+        this.prevTime = 0;
+        this.prevCycles = 0;
+        this.samples = new Float32Array(64);
+        this.sampleIndex = 0;
+    }
+    CPUPerformance.prototype.reset = function () {
+        this.prevTime = 0;
+        this.prevCycles = 0;
+        this.sampleIndex = 0;
+    };
+    CPUPerformance.prototype.update = function () {
+        if (this.prevTime) {
+            var delta = performance.now() - this.prevTime;
+            var deltaCycles = this.cpu.cycles - this.prevCycles;
+            var deltaCpuMillis = 1000 * (deltaCycles / this.MHZ);
+            var factor = deltaCpuMillis / delta;
+            if (!this.sampleIndex) {
+                this.samples.fill(factor);
+            }
+            this.samples[this.sampleIndex++ % this.samples.length] = factor;
+        }
+        this.prevCycles = this.cpu.cycles;
+        this.prevTime = performance.now();
+        var avg = this.samples.reduce(function (x, y) {
+            return x + y;
+        }) / this.samples.length;
+        return avg;
+    };
+    return CPUPerformance;
+}();
+exports.CPUPerformance = CPUPerformance;
+},{}],"utils/editor-history.util.ts":[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var AVRJS8_EDITOR_HISTORY = 'AVRJS8_EDITOR_HISTORY';
+var EditorHistoryUtil = /** @class */function () {
+    function EditorHistoryUtil() {}
+    EditorHistoryUtil.storeSnippet = function (codeSnippet) {
+        if (!EditorHistoryUtil.hasLocalStorage) {
+            return;
+        }
+        window.localStorage.setItem(AVRJS8_EDITOR_HISTORY, codeSnippet);
+    };
+    EditorHistoryUtil.clearSnippet = function () {
+        if (!EditorHistoryUtil.hasLocalStorage) {
+            return;
+        }
+        localStorage.removeItem(AVRJS8_EDITOR_HISTORY);
+    };
+    EditorHistoryUtil.getValue = function () {
+        if (!EditorHistoryUtil.hasLocalStorage) {
+            return;
+        }
+        return localStorage.getItem(AVRJS8_EDITOR_HISTORY);
+    };
+    EditorHistoryUtil.hasLocalStorage = !!window.localStorage;
+    return EditorHistoryUtil;
+}();
+exports.EditorHistoryUtil = EditorHistoryUtil;
+},{}],"index.ts":[function(require,module,exports) {
+"use strict";
+
+require("@wokwi/elements");
+
+var _compile = require("./compile");
+
+var _execute = require("./execute");
+
+var _formatTime = require("./format-time");
+
+require("./index.css");
+
+var _cpuPerformance = require("./cpu-performance");
+
+var _editorHistory = require("./utils/editor-history.util");
+
+var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) {
             try {
@@ -6726,185 +6829,171 @@ var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, gene
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-require("@wokwi/elements");
-var compile_1 = require("./compile");
-var execute_1 = require("./execute");
-var format_time_1 = require("./format-time");
-require("./index.css");
-var BLINK_CODE = "\n// LEDs connected to pins 8..13\n\nbyte leds[] = {13, 12, 11, 10, 9, 8};\nvoid setup() {\n  for (byte i = 0; i < sizeof(leds); i++) {\n    pinMode(leds[i], OUTPUT);\n  }\n}\n\nint i = 0;\nvoid loop() {\n  digitalWrite(leds[i], HIGH);\n  delay(250);\n  digitalWrite(leds[i], LOW);\n  i = (i + 1) % sizeof(leds);\n}".trim();
-var editor = void 0;
-window.editorLoaded = function () {
-    window.require.config({
-        paths: {
-            vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.18.1/min/vs"
-        }
-    });
-    window.require(["vs/editor/editor.main"], function () {
-        editor = monaco.editor.create(document.querySelector(".code-editor"), {
-            value: BLINK_CODE,
-            language: "cpp",
-            minimap: { enabled: false }
-        });
-    });
-};
-// Set up LEDs
-var LEDs = document.querySelectorAll("wokwi-led");
-// Set up toolbar
-var runner = void 0;
-var runButton = document.querySelector("#run-button");
-runButton.addEventListener("click", compileAndRun);
-var stopButton = document.querySelector("#stop-button");
-stopButton.addEventListener("click", stopCode);
-var statusLabel = document.querySelector("#status-label");
-var compilerOutputText = document.querySelector("#compiler-output-text");
-function updateLEDs(value, startPin) {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-        for (var _iterator = LEDs[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var led = _step.value;
-
-            var pin = parseInt(led.getAttribute("pin"), 10);
-            if (pin >= startPin && pin <= startPin + 8) {
-                led.value = value & 1 << pin - startPin ? true : false;
-            }
-        }
-    } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-    } finally {
-        try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
-            }
-        } finally {
-            if (_didIteratorError) {
-                throw _iteratorError;
-            }
-        }
+var __generator = undefined && undefined.__generator || function (thisArg, body) {
+    var _ = { label: 0, sent: function sent() {
+            if (t[0] & 1) throw t[1];return t[1];
+        }, trys: [], ops: [] },
+        f,
+        y,
+        t,
+        g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+        return this;
+    }), g;
+    function verb(n) {
+        return function (v) {
+            return step([n, v]);
+        };
     }
-}
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) {
+            try {
+                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                if (y = 0, t) op = [op[0] & 2, t.value];
+                switch (op[0]) {
+                    case 0:case 1:
+                        t = op;break;
+                    case 4:
+                        _.label++;return { value: op[1], done: false };
+                    case 5:
+                        _.label++;y = op[1];op = [0];continue;
+                    case 7:
+                        op = _.ops.pop();_.trys.pop();continue;
+                    default:
+                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                            _ = 0;continue;
+                        }
+                        if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+                            _.label = op[1];break;
+                        }
+                        if (op[0] === 6 && _.label < t[1]) {
+                            _.label = t[1];t = op;break;
+                        }
+                        if (t && _.label < t[2]) {
+                            _.label = t[2];_.ops.push(op);break;
+                        }
+                        if (t[2]) _.ops.pop();
+                        _.trys.pop();continue;
+                }
+                op = body.call(thisArg, _);
+            } catch (e) {
+                op = [6, e];y = 0;
+            } finally {
+                f = t = 0;
+            }
+        }if (op[0] & 5) throw op[1];return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+
+var editor; // eslint-disable-line @typescript-eslint/no-explicit-any
+var BLINK_CODE = "\n// Green LED connected to LED_BUILTIN,\n// Red LED connected to pin 12. Enjoy!\nvoid setup() {\n  Serial.begin(115200);\n  pinMode(LED_BUILTIN, OUTPUT);\n}\nvoid loop() {\n  Serial.println(\"Blink\");\n  digitalWrite(LED_BUILTIN, HIGH);\n  delay(500);\n  digitalWrite(LED_BUILTIN, LOW);\n  delay(500);\n}".trim();
+window.require.config({
+    paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }
+});
+window.require(['vs/editor/editor.main'], function () {
+    editor = monaco.editor.create(document.querySelector('.code-editor'), {
+        value: _editorHistory.EditorHistoryUtil.getValue() || BLINK_CODE,
+        language: 'cpp',
+        minimap: { enabled: false }
+    });
+});
+// Set up LEDs
+var led13 = document.querySelector('wokwi-led[color=green]');
+var led12 = document.querySelector('wokwi-led[color=red]');
+// Set up toolbar
+var runner;
+/* eslint-disable @typescript-eslint/no-use-before-define */
+var runButton = document.querySelector('#run-button');
+runButton.addEventListener('click', compileAndRun);
+var stopButton = document.querySelector('#stop-button');
+stopButton.addEventListener('click', stopCode);
+var revertButton = document.querySelector('#revert-button');
+revertButton.addEventListener('click', setBlinkSnippet);
+var statusLabel = document.querySelector('#status-label');
+var compilerOutputText = document.querySelector('#compiler-output-text');
+var serialOutputText = document.querySelector('#serial-output-text');
 function executeProgram(hex) {
-    runner = new execute_1.AVRRunner(hex);
+    runner = new _execute.AVRRunner(hex);
     var MHZ = 16000000;
     // Hook to PORTB register
-    runner.portD.addListener(function (value) {
-        updateLEDs(value, 0);
-    });
     runner.portB.addListener(function (value) {
-        updateLEDs(value, 8);
+        var D12bit = 1 << 4;
+        var D13bit = 1 << 5;
+        led12.value = value & D12bit ? true : false;
+        led13.value = value & D13bit ? true : false;
     });
+    runner.usart.onByteTransmit = function (value) {
+        serialOutputText.textContent += String.fromCharCode(value);
+    };
+    var cpuPerf = new _cpuPerformance.CPUPerformance(runner.cpu, MHZ);
     runner.execute(function (cpu) {
-        var time = format_time_1.formatTime(cpu.cycles / MHZ);
-        statusLabel.textContent = "Simulation time: " + time;
+        var time = (0, _formatTime.formatTime)(cpu.cycles / MHZ);
+        var speed = (cpuPerf.update() * 100).toFixed(0);
+        statusLabel.textContent = "Simulation time: " + time + " (" + speed + "%)";
     });
 }
 function compileAndRun() {
-    return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, led, result;
-
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-                switch (_context.prev = _context.next) {
-                    case 0:
-                        _iteratorNormalCompletion2 = true;
-                        _didIteratorError2 = false;
-                        _iteratorError2 = undefined;
-                        _context.prev = 3;
-
-                        for (_iterator2 = LEDs[Symbol.iterator](); !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                            led = _step2.value;
-
-                            led.value = false;
-                        }
-                        _context.next = 11;
-                        break;
-
-                    case 7:
-                        _context.prev = 7;
-                        _context.t0 = _context["catch"](3);
-                        _didIteratorError2 = true;
-                        _iteratorError2 = _context.t0;
-
-                    case 11:
-                        _context.prev = 11;
-                        _context.prev = 12;
-
-                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                            _iterator2.return();
-                        }
-
-                    case 14:
-                        _context.prev = 14;
-
-                        if (!_didIteratorError2) {
-                            _context.next = 17;
-                            break;
-                        }
-
-                        throw _iteratorError2;
-
-                    case 17:
-                        return _context.finish(14);
-
-                    case 18:
-                        return _context.finish(11);
-
-                    case 19:
-                        runButton.setAttribute("disabled", "1");
-                        _context.prev = 20;
-
-                        statusLabel.textContent = "Compiling...";
-                        _context.next = 24;
-                        return compile_1.buildHex(editor.getModel().getValue());
-
-                    case 24:
-                        result = _context.sent;
-
-                        compilerOutputText.textContent = result.stderr || result.stdout;
-                        if (result.hex) {
-                            compilerOutputText.textContent += "\nProgram running...";
-                            stopButton.removeAttribute("disabled");
-                            executeProgram(result.hex);
-                        } else {
-                            runButton.removeAttribute("disabled");
-                        }
-                        _context.next = 33;
-                        break;
-
-                    case 29:
-                        _context.prev = 29;
-                        _context.t1 = _context["catch"](20);
-
-                        runButton.removeAttribute("disabled");
-                        alert("Failed: " + _context.t1);
-
-                    case 33:
-                        _context.prev = 33;
-
-                        statusLabel.textContent = "";
-                        return _context.finish(33);
-
-                    case 36:
-                    case "end":
-                        return _context.stop();
-                }
+    return __awaiter(this, void 0, void 0, function () {
+        var result, err_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    led12.value = false;
+                    led13.value = false;
+                    storeUserSnippet();
+                    runButton.setAttribute('disabled', '1');
+                    revertButton.setAttribute('disabled', '1');
+                    serialOutputText.textContent = '';
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, 4, 5]);
+                    statusLabel.textContent = 'Compiling...';
+                    return [4 /*yield*/, (0, _compile.buildHex)(editor.getModel().getValue())];
+                case 2:
+                    result = _a.sent();
+                    compilerOutputText.textContent = result.stderr || result.stdout;
+                    if (result.hex) {
+                        compilerOutputText.textContent += '\nProgram running...';
+                        stopButton.removeAttribute('disabled');
+                        executeProgram(result.hex);
+                    } else {
+                        runButton.removeAttribute('disabled');
+                    }
+                    return [3 /*break*/, 5];
+                case 3:
+                    err_1 = _a.sent();
+                    runButton.removeAttribute('disabled');
+                    revertButton.removeAttribute('disabled');
+                    alert('Failed: ' + err_1);
+                    return [3 /*break*/, 5];
+                case 4:
+                    statusLabel.textContent = '';
+                    return [7 /*endfinally*/];
+                case 5:
+                    return [2 /*return*/];
             }
-        }, _callee, this, [[3, 7, 11, 19], [12,, 14, 18], [20, 29, 33, 36]]);
-    }));
+        });
+    });
+}
+function storeUserSnippet() {
+    _editorHistory.EditorHistoryUtil.clearSnippet();
+    _editorHistory.EditorHistoryUtil.storeSnippet(editor.getValue());
 }
 function stopCode() {
-    stopButton.setAttribute("disabled", "1");
-    runButton.removeAttribute("disabled");
+    stopButton.setAttribute('disabled', '1');
+    runButton.removeAttribute('disabled');
+    revertButton.removeAttribute('disabled');
     if (runner) {
         runner.stop();
         runner = null;
     }
 }
-},{"@wokwi/elements":"../node_modules/@wokwi/elements/dist/esm/index.js","./compile":"compile.ts","./execute":"execute.ts","./format-time":"format-time.ts","./index.css":"index.css"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+function setBlinkSnippet() {
+    editor.setValue(BLINK_CODE);
+    _editorHistory.EditorHistoryUtil.storeSnippet(editor.getValue());
+}
+},{"@wokwi/elements":"../node_modules/@wokwi/elements/dist/esm/index.js","./compile":"compile.ts","./execute":"execute.ts","./format-time":"format-time.ts","./index.css":"index.css","./cpu-performance":"cpu-performance.ts","./utils/editor-history.util":"utils/editor-history.util.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -6933,7 +7022,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '35705' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '38741' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
