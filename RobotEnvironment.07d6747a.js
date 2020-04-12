@@ -17159,7 +17159,7 @@ exports.EditorHistoryUtil = EditorHistoryUtil;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.led12 = exports.led13 = undefined;
+exports.isrightMotorReverse = exports.rightMotorSpeed = exports.isleftMotorReverse = exports.leftMotorSpeed = undefined;
 
 require("@wokwi/elements");
 
@@ -17259,7 +17259,7 @@ var __generator = undefined && undefined.__generator || function (thisArg, body)
 };
 
 var editor; // eslint-disable-line @typescript-eslint/no-explicit-any
-var BLINK_CODE = "\n#define rightMotor 13\n#define leftMotor 12\n\nvoid moveForward()\n{  \n  digitalWrite(rightMotor, HIGH);\n  digitalWrite(leftMotor, HIGH);\n}\nvoid rotateRight()\n{\n  digitalWrite(rightMotor, LOW);\n  digitalWrite(leftMotor, HIGH);\n}\nvoid rotateLeft()\n{\n  digitalWrite(rightMotor, HIGH);\n  digitalWrite(leftMotor, LOW);\n}\nvoid stop()\n{\n  digitalWrite(rightMotor, LOW);\n  digitalWrite(leftMotor, LOW);\n}\n\nvoid setup() {\n  Serial.begin(115200);\n  pinMode(rightMotor, OUTPUT);\n  pinMode(leftMotor, OUTPUT);\n\n}\nvoid loop() {\n  moveForward();\n  delay(5000);\n  rotateRight();\n  delay(7000);\n  moveForward();\n  delay(5000);\n  rotateLeft();\n  delay(2000);\n  stop();\n  delay(5000);\n}".trim();
+var BLINK_CODE = "\nvoid setUpMotors()\n{\n  pinMode(8, OUTPUT);\n  pinMode(9, OUTPUT);\n  pinMode(11, OUTPUT);\n  pinMode(12, OUTPUT);\n}\nvoid setLeftWheelSpeed(int speed)\n{\n switch(speed)\n {\n   case 0: \n    digitalWrite(8, LOW);\n    digitalWrite(9, LOW);\n    break;\n   case 1:\n    digitalWrite(8, HIGH);\n    digitalWrite(9, LOW);\n    break;\n   case 2: \n    digitalWrite(8, LOW);\n    digitalWrite(9, HIGH);\n    break;\n   case 3:\n    digitalWrite(8, HIGH);\n    digitalWrite(9, HIGH);\n    break;\n   default:\n    digitalWrite(8, LOW);\n    digitalWrite(9, LOW);\n }\n}\nvoid setRightWheelSpeed(int speed)\n{\n switch(speed)\n {\n   case 0: \n    digitalWrite(11, LOW);\n    digitalWrite(12, LOW);\n    break;\n   case 1:\n    digitalWrite(11, HIGH);\n    digitalWrite(12, LOW);\n    break;\n   case 2: \n    digitalWrite(11, LOW);\n    digitalWrite(12, HIGH);\n    break;\n   case 3:\n    digitalWrite(11, HIGH);\n    digitalWrite(12, HIGH);\n    break;\n   default:\n    digitalWrite(11, LOW);\n    digitalWrite(12, LOW);\n }\n}\nvoid setup() {\n  Serial.begin(115200);\n  setUpMotors();\n\n}\nvoid loop() {\n  //move forward slowly\n  setRightWheelSpeed(1);\n  setLeftWheelSpeed(1);\n  delay(5000);\n\n  //rotate right (left wheel on)\n  setRightWheelSpeed(0);\n  setLeftWheelSpeed(1);\n  delay(5000);\n\n  \n}".trim();
 window.require.config({
     paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs' }
 });
@@ -17270,12 +17270,13 @@ window.require(['vs/editor/editor.main'], function () {
         minimap: { enabled: false }
     });
 });
-// Set up LEDs
-var led13 = exports.led13 = document.querySelector('wokwi-led[color=green]');
-var led12 = exports.led12 = document.querySelector('wokwi-led[color=red]');
+// set up motor states
+var leftMotorSpeed = exports.leftMotorSpeed = 0;
+var isleftMotorReverse = exports.isleftMotorReverse = false;
+var rightMotorSpeed = exports.rightMotorSpeed = 0;
+var isrightMotorReverse = exports.isrightMotorReverse = false;
 // Set up toolbar
 var runner;
-var isRunning = false;
 /* eslint-disable @typescript-eslint/no-use-before-define */
 var runButton = document.querySelector('#run-button');
 runButton.addEventListener('click', compileAndRun);
@@ -17289,22 +17290,12 @@ var serialOutputText = document.querySelector('#serial-output-text');
 function executeProgram(hex) {
     runner = new _execute.AVRRunner(hex);
     var MHZ = 16000000;
-    // Hook to PORTB register
+    // Hook to PORTB Pins 8 to 13
     runner.portB.addListener(function (value) {
-        var D12bit = 1 << 4;
-        var D13bit = 1 << 5;
-        //if(isRunning)
-        {
-            led12.value = value & D12bit ? true : false;
-            led13.value = value & D13bit ? true : false;
-        }
-        /*else
-        {
-          led12.value = false;
-          led13.value = false;
-        }*/
-        //console.log("leds ", led12.value, led13.value);
-        //setMotorState(led12.value, led13.value);
+        exports.leftMotorSpeed = leftMotorSpeed = value & 0x03;
+        exports.isleftMotorReverse = isleftMotorReverse = value & 0x04 ? true : false;
+        exports.rightMotorSpeed = rightMotorSpeed = value >>> 3 & 0x03;
+        exports.isrightMotorReverse = isrightMotorReverse = value >>> 3 & 0x04 ? true : false;
     });
     runner.usart.onByteTransmit = function (value) {
         serialOutputText.textContent += String.fromCharCode(value);
@@ -17322,8 +17313,6 @@ function compileAndRun() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    led12.value = false;
-                    led13.value = false;
                     storeUserSnippet();
                     runButton.setAttribute('disabled', '1');
                     revertButton.setAttribute('disabled', '1');
@@ -17340,7 +17329,6 @@ function compileAndRun() {
                         compilerOutputText.textContent += '\nProgram running...';
                         stopButton.removeAttribute('disabled');
                         executeProgram(result.hex);
-                        isRunning = true;
                     } else {
                         runButton.removeAttribute('disabled');
                     }
@@ -17371,7 +17359,8 @@ function stopCode() {
     if (runner) {
         runner.stop();
         runner = null;
-        isRunning = false;
+        exports.leftMotorSpeed = leftMotorSpeed = 0;
+        exports.rightMotorSpeed = rightMotorSpeed = 0;
     }
 }
 function setBlinkSnippet() {
@@ -17402,16 +17391,16 @@ var wheel1 = _matterJs.Bodies.rectangle(40, 232, 20, 6);
 var robotBody = _matterJs.Bodies.rectangle(50, 250, 50, 30);
 var wheel2 = _matterJs.Bodies.rectangle(40, 268, 20, 5);
 var robot = _matterJs.Body.create({ parts: [wheel1, robotBody, wheel2] });
-_matterJs.Body.setDensity(robot, 10);
+_matterJs.Body.setDensity(robot, 500);
+_matterJs.Body.setMass(robot, 1000);
 _matterJs.Body.setPosition(robot, { x: 200, y: 200 });
 //Body.rotate(robot, 1);
 _matterJs.World.add(engine.world, [topWall, robot]);
 _matterJs.Engine.run(engine);
 _matterJs.Render.run(render);
-var force = 0.6;
 _matterJs.Events.on(engine, "afterUpdate", function () {
-    //console.log(motorStates.left, motorStates.right);
-    //console.log(led12.value, led13.value);
+    //console.log(robot.mass);
+    var multiplier = 0.00005;
     var angle = robot.angle;
     var x = robot.position.x;
     var y = robot.position.y;
@@ -17419,24 +17408,16 @@ _matterJs.Events.on(engine, "afterUpdate", function () {
     var xprime = x * Math.cos(angle) + y * Math.sin(angle);
     var yprime = -x * Math.sin(angle) + y * Math.cos(angle);
     //get value of xprime - w and yprime += h in game axis
-    var w = 20;
-    var h = 15;
-    var leftx = (xprime - w) * Math.cos(angle) - (yprime + h) * Math.sin(angle);
-    var rightx = (xprime - w) * Math.cos(angle) - (yprime - h) * Math.sin(angle);
-    var lefty = (yprime + h) * Math.cos(angle) + (xprime - w) * Math.sin(angle);
-    var righty = (yprime - h) * Math.cos(angle) + (xprime - w) * Math.sin(angle);
-    var leftWheelForce = { x: Math.cos(angle) * force, y: Math.sin(angle) * force };
-    var rightWheelForce = { x: Math.cos(angle) * force, y: Math.sin(angle) * force };
-    if (_index.led13.value) {
-        _matterJs.Body.applyForce(robot, { x: leftx, y: lefty }, leftWheelForce);
-    } else {
-        _matterJs.Body.setVelocity(robot, { x: 0, y: 0 });
-    }
-    if (_index.led12.value) {
-        _matterJs.Body.applyForce(robot, { x: rightx, y: righty }, rightWheelForce);
-    } else {
-        _matterJs.Body.setVelocity(robot, { x: 0, y: 0 });
-    }
+    var w = 0;
+    var h = 20;
+    var leftx = (xprime - w) * Math.cos(angle) - (yprime - h) * Math.sin(angle);
+    var lefty = (yprime - h) * Math.cos(angle) + (xprime - w) * Math.sin(angle);
+    var rightx = (xprime - w) * Math.cos(angle) - (yprime + h) * Math.sin(angle);
+    var righty = (yprime + h) * Math.cos(angle) + (xprime - w) * Math.sin(angle);
+    var leftWheelForce = { x: Math.cos(angle) * multiplier * _index.leftMotorSpeed * leftx, y: Math.sin(angle) * multiplier * _index.leftMotorSpeed * lefty };
+    var rightWheelForce = { x: Math.cos(angle) * multiplier * _index.rightMotorSpeed * rightx, y: Math.sin(angle) * multiplier * _index.rightMotorSpeed * righty };
+    _matterJs.Body.applyForce(robot, { x: leftx, y: lefty }, leftWheelForce);
+    _matterJs.Body.applyForce(robot, { x: rightx, y: righty }, rightWheelForce);
 });
 var resetCarButton = document.querySelector('#reset-car');
 resetCarButton.addEventListener('click', function () {
@@ -17472,7 +17453,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '45619' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '35533' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
