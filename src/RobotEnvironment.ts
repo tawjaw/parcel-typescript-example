@@ -26,8 +26,10 @@ var robotBody = Bodies.rectangle(50, 250, 50, 30 );
 var wheel2 = Bodies.rectangle(40, 268, 20, 5);
 var robot = Body.create({parts: [wheel1, robotBody, wheel2]});
 
-Body.setDensity(robot, 500);
+//Body.setDensity(robot, 500);
 Body.setMass(robot, 1000);
+robot.friction = 0.9;
+robot.frictionAir = 0.5;
 Body.setPosition(robot, {x: 200, y: 200});
 //Body.rotate(robot, 1);
 World.add(engine.world, [topWall, robot]);
@@ -41,7 +43,7 @@ Render.run(render);
 Events.on(engine, "afterUpdate", function() {
 
     //console.log(robot.mass);
-    const multiplier = 0.00005;
+    const multiplier = 0.001;
     const angle = robot.angle;
     const x = robot.position.x;
     const y = robot.position.y;
