@@ -17391,8 +17391,10 @@ var wheel1 = _matterJs.Bodies.rectangle(40, 232, 20, 6);
 var robotBody = _matterJs.Bodies.rectangle(50, 250, 50, 30);
 var wheel2 = _matterJs.Bodies.rectangle(40, 268, 20, 5);
 var robot = _matterJs.Body.create({ parts: [wheel1, robotBody, wheel2] });
-_matterJs.Body.setDensity(robot, 500);
+//Body.setDensity(robot, 500);
 _matterJs.Body.setMass(robot, 1000);
+robot.friction = 0.9;
+robot.frictionAir = 0.5;
 _matterJs.Body.setPosition(robot, { x: 200, y: 200 });
 //Body.rotate(robot, 1);
 _matterJs.World.add(engine.world, [topWall, robot]);
@@ -17400,7 +17402,7 @@ _matterJs.Engine.run(engine);
 _matterJs.Render.run(render);
 _matterJs.Events.on(engine, "afterUpdate", function () {
     //console.log(robot.mass);
-    var multiplier = 0.00005;
+    var multiplier = 0.001;
     var angle = robot.angle;
     var x = robot.position.x;
     var y = robot.position.y;
@@ -17453,7 +17455,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '35533' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '41445' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
