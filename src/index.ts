@@ -4,53 +4,85 @@ import { AVRRunner } from './execute';
 import { formatTime } from './format-time';
 import './index.css';
 import { CPUPerformance } from './cpu-performance';
-import { LEDElement } from '@wokwi/elements';
 import { EditorHistoryUtil } from './utils/editor-history.util';
 import "./RobotEnvironment";
 
 let editor: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 const BLINK_CODE = `
-#define rightMotor 13
-#define leftMotor 12
-
-void moveForward()
-{  
-  digitalWrite(rightMotor, HIGH);
-  digitalWrite(leftMotor, HIGH);
-}
-void rotateRight()
+void setUpMotors()
 {
-  digitalWrite(rightMotor, LOW);
-  digitalWrite(leftMotor, HIGH);
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(11, OUTPUT);
+  pinMode(12, OUTPUT);
 }
-void rotateLeft()
+void setLeftWheelSpeed(int speed)
 {
-  digitalWrite(rightMotor, HIGH);
-  digitalWrite(leftMotor, LOW);
+ switch(speed)
+ {
+   case 0: 
+    digitalWrite(8, LOW);
+    digitalWrite(9, LOW);
+    break;
+   case 1:
+    digitalWrite(8, HIGH);
+    digitalWrite(9, LOW);
+    break;
+   case 2: 
+    digitalWrite(8, LOW);
+    digitalWrite(9, HIGH);
+    break;
+   case 3:
+    digitalWrite(8, HIGH);
+    digitalWrite(9, HIGH);
+    break;
+   default:
+    digitalWrite(8, LOW);
+    digitalWrite(9, LOW);
+ }
 }
-void stop()
+void setRightWheelSpeed(int speed)
 {
-  digitalWrite(rightMotor, LOW);
-  digitalWrite(leftMotor, LOW);
+ switch(speed)
+ {
+   case 0: 
+    digitalWrite(11, LOW);
+    digitalWrite(12, LOW);
+    break;
+   case 1:
+    digitalWrite(11, HIGH);
+    digitalWrite(12, LOW);
+    break;
+   case 2: 
+    digitalWrite(11, LOW);
+    digitalWrite(12, HIGH);
+    break;
+   case 3:
+    digitalWrite(11, HIGH);
+    digitalWrite(12, HIGH);
+    break;
+   default:
+    digitalWrite(11, LOW);
+    digitalWrite(12, LOW);
+ }
 }
-
 void setup() {
   Serial.begin(115200);
-  pinMode(rightMotor, OUTPUT);
-  pinMode(leftMotor, OUTPUT);
+  setUpMotors();
 
 }
 void loop() {
-  moveForward();
+  //move forward slowly
+  setRightWheelSpeed(1);
+  setLeftWheelSpeed(1);
   delay(5000);
-  rotateRight();
-  delay(7000);
-  moveForward();
+
+  //rotate right (left wheel on)
+  setRightWheelSpeed(0);
+  setLeftWheelSpeed(1);
   delay(5000);
-  rotateLeft();
-  delay(2000);
-  stop();
-  delay(5000);
+
+  
 }`.trim();
 
 // Load Editor
@@ -67,13 +99,15 @@ window.require(['vs/editor/editor.main'], () => {
   });
 });
 
-// Set up LEDs
-export const led13 = document.querySelector<LEDElement>('wokwi-led[color=green]');
-export const led12 = document.querySelector<LEDElement>('wokwi-led[color=red]');
+// set up motor states
+export let leftMotorSpeed = 0;
+export let isleftMotorReverse = false;
+export let rightMotorSpeed = 0;
+export let isrightMotorReverse = false;
+
 
 // Set up toolbar
 let runner: AVRRunner;
-let isRunning = false;
 
 /* eslint-disable @typescript-eslint/no-use-before-define */
 const runButton = document.querySelector('#run-button');
@@ -90,25 +124,13 @@ function executeProgram(hex: string) {
   runner = new AVRRunner(hex);
   const MHZ = 16000000;
 
-  // Hook to PORTB register
-  runner.portB.addListener((value) => {
-    const D12bit = 1 << 4;
-    const D13bit = 1 << 5;
-    //if(isRunning)
-    {
-      led12.value = value & D12bit ? true : false;
-      led13.value = value & D13bit ? true : false;
-    
-    }
-    /*else
-    {
-      led12.value = false;
-      led13.value = false;
-    }*/
 
-    //console.log("leds ", led12.value, led13.value);
-    //setMotorState(led12.value, led13.value);
-      
+  // Hook to PORTB Pins 8 to 13
+  runner.portB.addListener(value => {
+    leftMotorSpeed = value & 0x03;
+    isleftMotorReverse = (value & 0x04) ? true : false;
+    rightMotorSpeed = (value >>> 3) & 0x03;
+    isrightMotorReverse = ((value >>> 3) & 0x04) ? true : false;
   });
   runner.usart.onByteTransmit = (value) => {
     serialOutputText.textContent += String.fromCharCode(value);
@@ -122,8 +144,7 @@ function executeProgram(hex: string) {
 }
 
 async function compileAndRun() {
-  led12.value = false;
-  led13.value = false;
+  
 
   storeUserSnippet();
 
@@ -139,7 +160,6 @@ async function compileAndRun() {
       compilerOutputText.textContent += '\nProgram running...';
       stopButton.removeAttribute('disabled');
       executeProgram(result.hex);
-      isRunning = true;
     } else {
       runButton.removeAttribute('disabled');
     }
@@ -164,7 +184,9 @@ function stopCode() {
   if (runner) {
     runner.stop();
     runner = null;
-    isRunning = false;
+    leftMotorSpeed = 0;
+    rightMotorSpeed = 0;
+    
   }
 }
 
