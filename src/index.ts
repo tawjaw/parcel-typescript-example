@@ -6,21 +6,51 @@ import './index.css';
 import { CPUPerformance } from './cpu-performance';
 import { LEDElement } from '@wokwi/elements';
 import { EditorHistoryUtil } from './utils/editor-history.util';
+import "./RobotEnvironment";
 
 let editor: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 const BLINK_CODE = `
-// Green LED connected to LED_BUILTIN,
-// Red LED connected to pin 12. Enjoy!
+#define rightMotor 13
+#define leftMotor 12
+
+void moveForward()
+{  
+  digitalWrite(rightMotor, HIGH);
+  digitalWrite(leftMotor, HIGH);
+}
+void rotateRight()
+{
+  digitalWrite(rightMotor, LOW);
+  digitalWrite(leftMotor, HIGH);
+}
+void rotateLeft()
+{
+  digitalWrite(rightMotor, HIGH);
+  digitalWrite(leftMotor, LOW);
+}
+void stop()
+{
+  digitalWrite(rightMotor, LOW);
+  digitalWrite(leftMotor, LOW);
+}
+
 void setup() {
   Serial.begin(115200);
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(rightMotor, OUTPUT);
+  pinMode(leftMotor, OUTPUT);
+
 }
 void loop() {
-  Serial.println("Blink");
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(500);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(500);
+  moveForward();
+  delay(5000);
+  rotateRight();
+  delay(7000);
+  moveForward();
+  delay(5000);
+  rotateLeft();
+  delay(2000);
+  stop();
+  delay(5000);
 }`.trim();
 
 // Load Editor
@@ -38,11 +68,12 @@ window.require(['vs/editor/editor.main'], () => {
 });
 
 // Set up LEDs
-const led13 = document.querySelector<LEDElement>('wokwi-led[color=green]');
-const led12 = document.querySelector<LEDElement>('wokwi-led[color=red]');
+export const led13 = document.querySelector<LEDElement>('wokwi-led[color=green]');
+export const led12 = document.querySelector<LEDElement>('wokwi-led[color=red]');
 
 // Set up toolbar
 let runner: AVRRunner;
+let isRunning = false;
 
 /* eslint-disable @typescript-eslint/no-use-before-define */
 const runButton = document.querySelector('#run-button');
@@ -63,8 +94,21 @@ function executeProgram(hex: string) {
   runner.portB.addListener((value) => {
     const D12bit = 1 << 4;
     const D13bit = 1 << 5;
-    led12.value = value & D12bit ? true : false;
-    led13.value = value & D13bit ? true : false;
+    //if(isRunning)
+    {
+      led12.value = value & D12bit ? true : false;
+      led13.value = value & D13bit ? true : false;
+    
+    }
+    /*else
+    {
+      led12.value = false;
+      led13.value = false;
+    }*/
+
+    //console.log("leds ", led12.value, led13.value);
+    //setMotorState(led12.value, led13.value);
+      
   });
   runner.usart.onByteTransmit = (value) => {
     serialOutputText.textContent += String.fromCharCode(value);
@@ -95,6 +139,7 @@ async function compileAndRun() {
       compilerOutputText.textContent += '\nProgram running...';
       stopButton.removeAttribute('disabled');
       executeProgram(result.hex);
+      isRunning = true;
     } else {
       runButton.removeAttribute('disabled');
     }
@@ -119,6 +164,7 @@ function stopCode() {
   if (runner) {
     runner.stop();
     runner = null;
+    isRunning = false;
   }
 }
 
@@ -126,3 +172,4 @@ function setBlinkSnippet() {
   editor.setValue(BLINK_CODE);
   EditorHistoryUtil.storeSnippet(editor.getValue());
 }
+
