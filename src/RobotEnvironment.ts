@@ -1,7 +1,5 @@
-import { Engine, Render, Bodies, World, Body, Events } from "matter-js";
-
+import { Engine, Render, Bodies, World, Body, Events, Vertices, Vector} from "matter-js";
 import {leftMotorSpeed, isleftMotorReverse, rightMotorSpeed, isrightMotorReverse } from "./index.ts"
-
 
 
 var myCanvas = document.getElementById('world');
@@ -26,7 +24,9 @@ var robotBody = Bodies.rectangle(50, 250, 50, 30 );
 var wheel2 = Bodies.rectangle(40, 268, 20, 5);
 var robot = Body.create({parts: [wheel1, robotBody, wheel2]});
 
-//Body.setDensity(robot, 500);
+
+
+
 Body.setMass(robot, 1000);
 robot.friction = 0.9;
 robot.frictionAir = 0.5;
@@ -73,3 +73,5 @@ resetCarButton.addEventListener('click', function(){
     Body.setPosition(robot, {x: 200, y: 200});
     Body.setAngle(robot, 0);
 });
+
+
